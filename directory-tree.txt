@@ -1,0 +1,48 @@
+lib/
+├── config/
+│   ├── env/
+│   ├── routes/
+│   │   └── app_routes.dart
+│   ├── theme/
+├── core/
+│   ├── constants/
+│   ├── errors/
+│   ├── network/
+│   │   ├── api_endpoints.dart
+│   │   └── dio_client.dart
+│   ├── utils/
+│   ├── widgets/
+├── features/
+│   ├── auth/
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── auth_remote_datasource.dart
+│   │   │   │   └── auth_remote_datasource_impl.dart
+│   │   │   ├── models/
+│   │   │   │   └── user_model.dart
+│   │   │   ├── repositories/
+│   │   │       └── auth_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   └── user.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── auth_repository.dart
+│   │   │   ├── usecases/
+│   │   │       └── login_user.dart
+│   │   ├── presentation/
+│   │       ├── cubit/
+│   │       │   ├── auth_cubit.dart
+│   │       │   └── auth_state.dart
+│   │       ├── pages/
+│   │       │   ├── login_page.dart
+│   │       │   ├── register_page.dart
+│   │       │   └── splash_page.dart
+│   │       ├── providers/
+│   │       ├── widgets/
+│   │           ├── auth_button.dart
+│   │           └── auth_text_field.dart
+│   ├── farmers/
+│   ├── orders/
+│   ├── products/
+│   ├── profile/
+└── main.dart
