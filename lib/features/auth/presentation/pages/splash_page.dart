@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:localharvest_canada/config/routes/app_routes.dart';
+import 'package:localharvest_canada/core/app_state/app_location.dart';
 import 'package:localharvest_canada/core/widgets/responsive_layout.dart';
+import 'package:localharvest_canada/features/location/data/services/location_service.dart';
+import 'package:localharvest_canada/features/location/domain/repositories/location_repository_impl.dart';
+import 'package:localharvest_canada/features/location/domain/usecases/get_current_location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
@@ -32,16 +36,22 @@ class _SplashPageState extends State<SplashPage>
   }
 
   Future<void> _navigate() async {
+    // Wait for fade animation to complete
+    // await Future.delayed(const Duration(seconds: 3));
+    await Future.wait([
+      Future.delayed(const Duration(seconds: 3)),
+      _fetchUserLocation(),
+    ]);
+
+    // Check login token
     final sharedPreferences = await SharedPreferences.getInstance();
     final token = sharedPreferences.getString('userToken');
-    // Navigate to Login after 3 seconds
-    Timer(const Duration(seconds: 3), () {
-      if (token != null) {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-      } else {
-        Navigator.pushReplacementNamed(context, AppRoutes.login);
-      }
-    });
+    // Navigate
+    if (token != null) {
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    } else {
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
+    }
   }
 
   @override
@@ -109,5 +119,23 @@ class _SplashPageState extends State<SplashPage>
         ),
       ),
     );
+  }
+
+  Future<void> _fetchUserLocation() async {
+    // Fetch user location (before login check)
+    try {
+      final service = LocationService();
+      final repository = LocationRepositoryImpl(service);
+      final getCurrentLocationUseCase = GetCurrentLocation(repository);
+      final userLocation = await getCurrentLocationUseCase();
+
+      AppLocation.currentPosition = userLocation;
+      debugPrint(
+        "User Location: ${userLocation.latitude}, ${userLocation.longitude}",
+      );
+    } catch (e) {
+      debugPrint("Location error: $e");
+      // Continue even if location fails
+    }
   }
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart' hide SearchBar;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:localharvest_canada/core/app_state/app_location.dart';
 import 'package:localharvest_canada/core/widgets/responsive_layout.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/bottom_nav_bar.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/categories_list.dart';
@@ -20,6 +24,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _showUserLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +63,16 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 2),
                 Text(
                   'Fresh from nearby farms',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
+                icon: const Icon(
+                  Icons.shopping_cart_outlined,
+                  color: Colors.white,
+                ),
                 onPressed: () {
                   // Navigate to Cart
                 },
@@ -97,7 +108,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _homeTab(){
+  Widget _homeTab() {
     return SingleChildScrollView(
       padding: EdgeInsets.only(bottom: 24),
       child: Column(
@@ -121,6 +132,43 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Future<void> _showUserLocation() async {
+    final currentPosition = AppLocation.currentPosition;
+
+    if (currentPosition != null) {
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          currentPosition.latitude,
+          currentPosition.longitude,
+        );
+
+        if (placemarks.isNotEmpty) {
+          final placemark = placemarks.first;
+          Fluttertoast.showToast(
+            msg:
+                'Your Location: ${currentPosition.latitude},\n ${currentPosition.longitude},\n'
+                '${placemark.locality},\n ${placemark.administrativeArea}',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 16,
+          );
+        }
+      } catch (e) {
+        // TODO
+        debugPrint("$e");
+      }
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Could not fetch your location',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.black87,
+        textColor: Colors.white,
+        fontSize: 16,
+      );
+    }
+  }
 }
-
-
