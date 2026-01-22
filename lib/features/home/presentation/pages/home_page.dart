@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:localharvest_canada/core/app_state/app_location.dart';
 import 'package:localharvest_canada/core/widgets/responsive_layout.dart';
+import 'package:localharvest_canada/features/categories/presentation/widgets/categories_list.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/bottom_nav_bar.dart';
-import 'package:localharvest_canada/features/home/presentation/widgets/categories_list.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/home_drawer.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/nearby_farm_list.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/products_list.dart';
@@ -85,7 +84,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          drawer: const HomeDrawer(),
+          drawer:  HomeDrawer(),
           body: IndexedStack(
             index: _currentIndex,
             children: [
@@ -120,7 +119,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 8),
           const SectionTitle(title: 'Categories'),
           SizedBox(height: 8),
-          const CategoriesList(),
+          CategoriesList(),
           SizedBox(height: 8),
           const SectionTitle(title: 'Nearby Farms'),
           const NearbyFarmsList(),
@@ -147,8 +146,7 @@ class _HomePageState extends State<HomePage> {
           final placemark = placemarks.first;
           Fluttertoast.showToast(
             msg:
-                'Your Location: ${currentPosition.latitude},\n ${currentPosition.longitude},\n'
-                '${placemark.locality},\n ${placemark.administrativeArea}',
+                'Your Location: ${placemark.locality}, ${placemark.administrativeArea}',
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.CENTER,
             backgroundColor: Colors.black87,

@@ -15,7 +15,7 @@ class RegisterPage extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void _register(BuildContext context) {
+  void  _register(BuildContext context) {
     final fullName = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();

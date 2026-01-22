@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localharvest_canada/config/routes/app_routes.dart';
+import 'package:localharvest_canada/core/app_state/app_user.dart';
 import 'package:localharvest_canada/features/home/presentation/pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,15 +9,29 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Read user from memory
+    final user = AppUser.currentUser;
     return Drawer(
       child: Column(
         children: [
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(color: Color(0xFF4CAF50)),
-            accountName: const Text('Ankit Maisuriya'),
-            accountEmail: const Text('ankit@gmail.com'),
-            currentAccountPicture: const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/top_banner.png'),
+            accountName: Text(
+              user?.full_name ?? '',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            accountEmail: Text(user?.email ?? ''),
+            // currentAccountPicture: const CircleAvatar(
+            //   backgroundImage: AssetImage('assets/images/top_banner.png'),
+            // ),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Text(
+                user != null && user.full_name.isNotEmpty
+                    ? user.full_name[0].toUpperCase()
+                    : 'U',
+                style: const TextStyle(fontSize: 24, color: Colors.green),
+              ),
             ),
           ),
           _drawerItem(
@@ -25,6 +40,14 @@ class HomeDrawer extends StatelessWidget {
             'Home',
             onTap: () {
               Navigator.pushReplacementNamed(context, AppRoutes.home);
+            },
+          ),
+          _drawerItem(
+            context,
+            Icons.person,
+            'Profile',
+            onTap: () {
+
             },
           ),
           _drawerItem(

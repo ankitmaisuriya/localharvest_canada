@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:localharvest_canada/config/routes/app_routes.dart';
 import 'package:localharvest_canada/core/app_state/app_location.dart';
+import 'package:localharvest_canada/core/app_state/app_user.dart';
 import 'package:localharvest_canada/core/widgets/responsive_layout.dart';
+import 'package:localharvest_canada/features/auth/domain/entities/user.dart';
 import 'package:localharvest_canada/features/location/data/services/location_service.dart';
 import 'package:localharvest_canada/features/location/domain/repositories/location_repository_impl.dart';
 import 'package:localharvest_canada/features/location/domain/usecases/get_current_location.dart';
@@ -46,8 +48,12 @@ class _SplashPageState extends State<SplashPage>
     // Check login token
     final sharedPreferences = await SharedPreferences.getInstance();
     final token = sharedPreferences.getString('userToken');
+    final name = sharedPreferences.getString('userName') ?? '';
+    final email = sharedPreferences.getString('userEmail') ?? '';
+
     // Navigate
     if (token != null) {
+      AppUser.currentUser = User(id: token, email: email, full_name: name, role:'');
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     } else {
       Navigator.pushReplacementNamed(context, AppRoutes.login);

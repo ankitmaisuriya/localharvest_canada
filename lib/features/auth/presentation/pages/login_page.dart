@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localharvest_canada/config/routes/app_routes.dart';
+import 'package:localharvest_canada/core/app_state/app_user.dart';
 import 'package:localharvest_canada/core/utils/validators.dart';
 import 'package:localharvest_canada/core/widgets/responsive_layout.dart';
 import 'package:localharvest_canada/features/auth/presentation/cubit/auth_cubit.dart';
@@ -76,7 +77,11 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.of(context).pop();
                 final prefs = await SharedPreferences.getInstance();
                 prefs.setString('userToken', state.user.id);
-
+                //below two lines need to sets because when you remove your app from background you will get AppUser.currentUser null so now we are going to store it in shared preference.
+                prefs.setString('userName', state.user.full_name);
+                prefs.setString('userEmail', state.user.email);
+                // Save full user in memory
+                AppUser.currentUser = state.user;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
