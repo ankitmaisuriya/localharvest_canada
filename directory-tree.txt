@@ -1,48 +1,343 @@
-lib/
-├── config/
-│   ├── env/
-│   ├── routes/
-│   │   └── app_routes.dart
-│   ├── theme/
-├── core/
-│   ├── constants/
-│   ├── errors/
-│   ├── network/
-│   │   ├── api_endpoints.dart
-│   │   └── dio_client.dart
-│   ├── utils/
-│   ├── widgets/
-├── features/
-│   ├── auth/
-│   │   ├── data/
-│   │   │   ├── datasources/
-│   │   │   │   ├── auth_remote_datasource.dart
-│   │   │   │   └── auth_remote_datasource_impl.dart
-│   │   │   ├── models/
-│   │   │   │   └── user_model.dart
-│   │   │   ├── repositories/
-│   │   │       └── auth_repository_impl.dart
-│   │   ├── domain/
-│   │   │   ├── entities/
-│   │   │   │   └── user.dart
-│   │   │   ├── repositories/
-│   │   │   │   └── auth_repository.dart
-│   │   │   ├── usecases/
-│   │   │       └── login_user.dart
-│   │   ├── presentation/
-│   │       ├── cubit/
-│   │       │   ├── auth_cubit.dart
-│   │       │   └── auth_state.dart
-│   │       ├── pages/
-│   │       │   ├── login_page.dart
-│   │       │   ├── register_page.dart
-│   │       │   └── splash_page.dart
-│   │       ├── providers/
-│   │       ├── widgets/
-│   │           ├── auth_button.dart
-│   │           └── auth_text_field.dart
-│   ├── farmers/
-│   ├── orders/
-│   ├── products/
-│   ├── profile/
-└── main.dart
+localharvest_canada/
+├── android/
+│   ├── app/
+│   │   ├── src/
+│   │   │   ├── debug/
+│   │   │   │   └── AndroidManifest.xml
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   ├── io/
+│   │   │   │   │       ├── flutter/
+│   │   │   │   │           ├── plugins/
+│   │   │   │   ├── kotlin/
+│   │   │   │   │   ├── com/
+│   │   │   │   │       ├── example/
+│   │   │   │   │           ├── localharvest_canada/
+│   │   │   │   │               └── MainActivity.kt
+│   │   │   │   ├── res/
+│   │   │   │   │   ├── drawable/
+│   │   │   │   │   │   └── launch_background.xml
+│   │   │   │   │   ├── drawable-v21/
+│   │   │   │   │   │   └── launch_background.xml
+│   │   │   │   │   ├── mipmap-hdpi/
+│   │   │   │   │   │   └── ic_launcher.png
+│   │   │   │   │   ├── mipmap-mdpi/
+│   │   │   │   │   │   └── ic_launcher.png
+│   │   │   │   │   ├── mipmap-xhdpi/
+│   │   │   │   │   │   └── ic_launcher.png
+│   │   │   │   │   ├── mipmap-xxhdpi/
+│   │   │   │   │   │   └── ic_launcher.png
+│   │   │   │   │   ├── mipmap-xxxhdpi/
+│   │   │   │   │   │   └── ic_launcher.png
+│   │   │   │   │   ├── values/
+│   │   │   │   │   │   └── styles.xml
+│   │   │   │   │   ├── values-night/
+│   │   │   │   │       └── styles.xml
+│   │   │   │   └── AndroidManifest.xml
+│   │   │   ├── profile/
+│   │   │       └── AndroidManifest.xml
+│   │   └── build.gradle.kts
+│   ├── gradle/
+│   │   ├── wrapper/
+│   │       └── gradle-wrapper.properties
+│   ├── build.gradle.kts
+│   ├── gradle.properties
+│   └── settings.gradle.kts
+├── assets/
+│   ├── anim/
+│   │   └── loading.json
+│   ├── images/
+│       ├── app_icon.png
+│       ├── bottom_banner.png
+│       ├── splash_screen.png
+│       ├── sunrise_harvest.png
+│       └── top_banner.png
+├── ios/
+│   ├── Flutter/
+│   │   ├── AppFrameworkInfo.plist
+│   │   ├── Debug.xcconfig
+│   │   └── Release.xcconfig
+│   ├── Runner/
+│   │   ├── Assets.xcassets/
+│   │   │   ├── AppIcon.appiconset/
+│   │   │   │   ├── Contents.json
+│   │   │   │   ├── Icon-App-1024x1024@1x.png
+│   │   │   │   ├── Icon-App-20x20@1x.png
+│   │   │   │   ├── Icon-App-20x20@2x.png
+│   │   │   │   ├── Icon-App-20x20@3x.png
+│   │   │   │   ├── Icon-App-29x29@1x.png
+│   │   │   │   ├── Icon-App-29x29@2x.png
+│   │   │   │   ├── Icon-App-29x29@3x.png
+│   │   │   │   ├── Icon-App-40x40@1x.png
+│   │   │   │   ├── Icon-App-40x40@2x.png
+│   │   │   │   ├── Icon-App-40x40@3x.png
+│   │   │   │   ├── Icon-App-50x50@1x.png
+│   │   │   │   ├── Icon-App-50x50@2x.png
+│   │   │   │   ├── Icon-App-57x57@1x.png
+│   │   │   │   ├── Icon-App-57x57@2x.png
+│   │   │   │   ├── Icon-App-60x60@2x.png
+│   │   │   │   ├── Icon-App-60x60@3x.png
+│   │   │   │   ├── Icon-App-72x72@1x.png
+│   │   │   │   ├── Icon-App-72x72@2x.png
+│   │   │   │   ├── Icon-App-76x76@1x.png
+│   │   │   │   ├── Icon-App-76x76@2x.png
+│   │   │   │   └── Icon-App-83.5x83.5@2x.png
+│   │   │   ├── LaunchImage.imageset/
+│   │   │       ├── Contents.json
+│   │   │       ├── LaunchImage.png
+│   │   │       ├── LaunchImage@2x.png
+│   │   │       ├── LaunchImage@3x.png
+│   │   │       └── README.md
+│   │   ├── Base.lproj/
+│   │   │   ├── LaunchScreen.storyboard
+│   │   │   └── Main.storyboard
+│   │   ├── AppDelegate.swift
+│   │   ├── Info.plist
+│   │   └── Runner-Bridging-Header.h
+│   ├── Runner.xcodeproj/
+│   │   ├── project.xcworkspace/
+│   │   │   ├── xcshareddata/
+│   │   │   │   ├── swiftpm/
+│   │   │   │   │   ├── configuration/
+│   │   │   │   ├── IDEWorkspaceChecks.plist
+│   │   │   │   └── WorkspaceSettings.xcsettings
+│   │   │   └── contents.xcworkspacedata
+│   │   ├── xcshareddata/
+│   │   │   ├── xcschemes/
+│   │   │       └── Runner.xcscheme
+│   │   └── project.pbxproj
+│   ├── Runner.xcworkspace/
+│   │   ├── xcshareddata/
+│   │   │   ├── swiftpm/
+│   │   │   │   ├── configuration/
+│   │   │   ├── IDEWorkspaceChecks.plist
+│   │   │   └── WorkspaceSettings.xcsettings
+│   │   └── contents.xcworkspacedata
+│   ├── RunnerTests/
+│   │   └── RunnerTests.swift
+│   └── Podfile
+├── lib/
+│   ├── config/
+│   │   ├── env/
+│   │   ├── routes/
+│   │   │   └── app_routes.dart
+│   │   ├── theme/
+│   ├── core/
+│   │   ├── app_state/
+│   │   │   ├── app_location.dart
+│   │   │   └── app_user.dart
+│   │   ├── constants/
+│   │   ├── errors/
+│   │   │   └── auth_exception.dart
+│   │   ├── network/
+│   │   │   ├── api_endpoints.dart
+│   │   │   └── dio_client.dart
+│   │   ├── utils/
+│   │   │   └── validators.dart
+│   │   ├── widgets/
+│   │       └── responsive_layout.dart
+│   ├── features/
+│   │   ├── auth/
+│   │   │   ├── data/
+│   │   │   │   ├── datasources/
+│   │   │   │   │   ├── auth_remote_datasource.dart
+│   │   │   │   │   └── auth_remote_datasource_impl.dart
+│   │   │   │   ├── models/
+│   │   │   │   │   └── user_model.dart
+│   │   │   │   ├── repositories/
+│   │   │   │       └── auth_repository_impl.dart
+│   │   │   ├── domain/
+│   │   │   │   ├── entities/
+│   │   │   │   │   └── user.dart
+│   │   │   │   ├── repositories/
+│   │   │   │   │   └── auth_repository.dart
+│   │   │   │   ├── usecases/
+│   │   │   │       ├── login_user.dart
+│   │   │   │       └── register_user.dart
+│   │   │   ├── presentation/
+│   │   │       ├── cubit/
+│   │   │       │   ├── auth_cubit.dart
+│   │   │       │   └── auth_state.dart
+│   │   │       ├── pages/
+│   │   │       │   ├── login_page.dart
+│   │   │       │   ├── login_page_old_design.dart
+│   │   │       │   ├── register_page.dart
+│   │   │       │   └── splash_page.dart
+│   │   │       ├── providers/
+│   │   │       ├── widgets/
+│   │   │           ├── auth_button.dart
+│   │   │           └── auth_text_field.dart
+│   │   ├── categories/
+│   │   │   ├── data/
+│   │   │   │   ├── datasources/
+│   │   │   │   │   ├── category_remote_datasource.dart
+│   │   │   │   │   └── category_remote_datasource_impl.dart
+│   │   │   │   ├── models/
+│   │   │   │       └── category_model.dart
+│   │   │   ├── domain/
+│   │   │   │   ├── entities/
+│   │   │   │   │   └── category.dart
+│   │   │   │   ├── repositories/
+│   │   │   │   │   ├── category_repository.dart
+│   │   │   │   │   └── category_repository_impl.dart
+│   │   │   │   ├── usecases/
+│   │   │   │       └── get_categories.dart
+│   │   │   ├── presentation/
+│   │   │       ├── cubit/
+│   │   │       │   ├── category_cubit.dart
+│   │   │       │   └── category_state.dart
+│   │   │       ├── widgets/
+│   │   │           └── categories_list.dart
+│   │   ├── farm_details/
+│   │   │   ├── data/
+│   │   │   ├── domain/
+│   │   │   ├── presentation/
+│   │   │       ├── pages/
+│   │   │       │   └── farm_details_page.dart
+│   │   │       ├── widgets/
+│   │   │           ├── farm_contact_card.dart
+│   │   │           ├── farm_info_card.dart
+│   │   │           └── product_card.dart
+│   │   ├── farmers/
+│   │   ├── home/
+│   │   │   ├── data/
+│   │   │   ├── domain/
+│   │   │   ├── presentation/
+│   │   │       ├── pages/
+│   │   │       │   └── home_page.dart
+│   │   │       ├── widgets/
+│   │   │           ├── bottom_nav_bar.dart
+│   │   │           ├── categories_list.dart
+│   │   │           ├── home_drawer.dart
+│   │   │           ├── nearby_farm_list.dart
+│   │   │           ├── products_list.dart
+│   │   │           ├── search_bar.dart
+│   │   │           ├── section_title.dart
+│   │   │           └── top_banner.dart
+│   │   ├── location/
+│   │   │   ├── data/
+│   │   │   │   ├── services/
+│   │   │   │       └── location_service.dart
+│   │   │   ├── domain/
+│   │   │   │   ├── entities/
+│   │   │   │   │   └── user_location.dart
+│   │   │   │   ├── repositories/
+│   │   │   │   │   ├── location_repository.dart
+│   │   │   │   │   └── location_repository_impl.dart
+│   │   │   │   ├── usecases/
+│   │   │   │       └── get_current_location.dart
+│   │   │   ├── presentation/
+│   │   ├── map/
+│   │   │   ├── data/
+│   │   │   ├── domain/
+│   │   │   ├── presentation/
+│   │   │       ├── pages/
+│   │   │       │   └── map_page.dart
+│   │   │       ├── widgets/
+│   │   ├── nearby_farms/
+│   │   │   ├── data/
+│   │   │   ├── domain/
+│   │   │   ├── presentation/
+│   │   │       ├── pages/
+│   │   │       │   └── nearby_farms_page.dart
+│   │   │       ├── widgets/
+│   │   │           └── farm_item_card.dart
+│   │   ├── orders/
+│   │   ├── products/
+│   │   ├── profile/
+│   └── main.dart
+├── linux/
+│   ├── flutter/
+│   │   ├── CMakeLists.txt
+│   │   ├── generated_plugin_registrant.cc
+│   │   ├── generated_plugin_registrant.h
+│   │   └── generated_plugins.cmake
+│   ├── runner/
+│   │   ├── CMakeLists.txt
+│   │   ├── main.cc
+│   │   ├── my_application.cc
+│   │   └── my_application.h
+│   └── CMakeLists.txt
+├── macos/
+│   ├── Flutter/
+│   │   ├── Flutter-Debug.xcconfig
+│   │   ├── Flutter-Release.xcconfig
+│   │   └── GeneratedPluginRegistrant.swift
+│   ├── Runner/
+│   │   ├── Assets.xcassets/
+│   │   │   ├── AppIcon.appiconset/
+│   │   │       ├── Contents.json
+│   │   │       ├── app_icon_1024.png
+│   │   │       ├── app_icon_128.png
+│   │   │       ├── app_icon_16.png
+│   │   │       ├── app_icon_256.png
+│   │   │       ├── app_icon_32.png
+│   │   │       ├── app_icon_512.png
+│   │   │       └── app_icon_64.png
+│   │   ├── Base.lproj/
+│   │   │   └── MainMenu.xib
+│   │   ├── Configs/
+│   │   │   ├── AppInfo.xcconfig
+│   │   │   ├── Debug.xcconfig
+│   │   │   ├── Release.xcconfig
+│   │   │   └── Warnings.xcconfig
+│   │   ├── AppDelegate.swift
+│   │   ├── DebugProfile.entitlements
+│   │   ├── Info.plist
+│   │   ├── MainFlutterWindow.swift
+│   │   └── Release.entitlements
+│   ├── Runner.xcodeproj/
+│   │   ├── project.xcworkspace/
+│   │   │   ├── xcshareddata/
+│   │   │       ├── swiftpm/
+│   │   │       │   ├── configuration/
+│   │   │       └── IDEWorkspaceChecks.plist
+│   │   ├── xcshareddata/
+│   │   │   ├── xcschemes/
+│   │   │       └── Runner.xcscheme
+│   │   └── project.pbxproj
+│   ├── Runner.xcworkspace/
+│   │   ├── xcshareddata/
+│   │   │   ├── swiftpm/
+│   │   │   │   ├── configuration/
+│   │   │   └── IDEWorkspaceChecks.plist
+│   │   └── contents.xcworkspacedata
+│   ├── RunnerTests/
+│   │   └── RunnerTests.swift
+│   └── Podfile
+├── web/
+│   ├── icons/
+│   │   ├── Icon-192.png
+│   │   ├── Icon-512.png
+│   │   ├── Icon-maskable-192.png
+│   │   └── Icon-maskable-512.png
+│   ├── favicon.png
+│   ├── index.html
+│   └── manifest.json
+├── windows/
+│   ├── flutter/
+│   │   ├── CMakeLists.txt
+│   │   ├── generated_plugin_registrant.cc
+│   │   ├── generated_plugin_registrant.h
+│   │   └── generated_plugins.cmake
+│   ├── runner/
+│   │   ├── resources/
+│   │   │   └── app_icon.ico
+│   │   ├── CMakeLists.txt
+│   │   ├── Runner.rc
+│   │   ├── flutter_window.cpp
+│   │   ├── flutter_window.h
+│   │   ├── main.cpp
+│   │   ├── resource.h
+│   │   ├── runner.exe.manifest
+│   │   ├── utils.cpp
+│   │   ├── utils.h
+│   │   ├── win32_window.cpp
+│   │   └── win32_window.h
+│   └── CMakeLists.txt
+├── README.md
+├── analysis_options.yaml
+├── devtools_options.yaml
+├── directory-tree.txt
+├── pubspec.lock
+└── pubspec.yaml

@@ -1,18 +1,21 @@
+// home_page.dart
 import 'package:flutter/material.dart' hide SearchBar;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:localharvest_canada/features/home/presentation/widgets/nearby_farm_list.dart';
+import 'package:localharvest_canada/features/nearby_farms/presentation/pages/nearby_farms_page.dart';
 import 'package:localharvest_canada/core/app_state/app_location.dart';
 import 'package:localharvest_canada/core/widgets/responsive_layout.dart';
 import 'package:localharvest_canada/features/categories/presentation/widgets/categories_list.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/bottom_nav_bar.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/home_drawer.dart';
-import 'package:localharvest_canada/features/home/presentation/widgets/nearby_farm_list.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/products_list.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/search_bar.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/section_title.dart';
 import 'package:localharvest_canada/features/home/presentation/widgets/top_banner.dart';
 import 'package:localharvest_canada/features/map/presentation/pages/map_page.dart';
-import 'package:localharvest_canada/features/nearby_farms/presentation/pages/nearby_farms_page.dart';
+import 'package:localharvest_canada/features/nearby_farms/presentation/cubit/nearby_farms_cubit.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -26,9 +29,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _showUserLocation();
+    _fetchNearbyFarms();
+  }
+
+  /// Wait until location is available, then fetch nearby farms
+  void _fetchNearbyFarms() async {
+    while (AppLocation.currentPosition == null) {
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+
+    final currentPosition = AppLocation.currentPosition!;
+    context.read<NearbyFarmsCubit>().fetchNearbyFarms(
+      latitude: currentPosition.latitude,
+      longitude: currentPosition.longitude,
+    );
   }
 
   @override
@@ -42,10 +58,8 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Colors.lightGreen,
             leading: Builder(
               builder: (context) => IconButton(
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                icon: Icon(Icons.menu, color: Colors.white),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+                icon: const Icon(Icons.menu, color: Colors.white),
               ),
             ),
             title: Column(
@@ -68,39 +82,27 @@ class _HomePageState extends State<HomePage> {
             ),
             actions: [
               IconButton(
-                icon: const Icon(
-                  Icons.shopping_cart_outlined,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  // Navigate to Cart
-                },
+                icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
+                onPressed: () {},
               ),
               IconButton(
                 icon: const Icon(Icons.notifications_none, color: Colors.white),
-                onPressed: () {
-                  // Navigate to Notifications
-                },
+                onPressed: () {},
               ),
             ],
           ),
-          drawer:  HomeDrawer(),
+          drawer: HomeDrawer(),
           body: IndexedStack(
             index: _currentIndex,
             children: [
               _homeTab(),
               const MapPage(),
-              const NearbyFarmsPage(),
-              // const Center(child: Text('Favorites Screen')),
+              const NearbyFarmsPage(), // full page for nearby farms
             ],
           ),
           bottomNavigationBar: BottomNavBar(
             currentIndex: _currentIndex,
-            onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
+            onTap: (index) => setState(() => _currentIndex = index),
           ),
         ),
       ),
@@ -109,23 +111,23 @@ class _HomePageState extends State<HomePage> {
 
   Widget _homeTab() {
     return SingleChildScrollView(
-      padding: EdgeInsets.only(bottom: 24),
+      padding: const EdgeInsets.only(bottom: 24),
       child: Column(
-        children: [
+        children: const [
           SizedBox(height: 8),
-          const TopBanner(),
+          TopBanner(),
           SizedBox(height: 8),
-          const SearchBar(),
+          SearchBar(),
           SizedBox(height: 8),
-          const SectionTitle(title: 'Categories'),
+          SectionTitle(title: 'Categories'),
           SizedBox(height: 8),
           CategoriesList(),
           SizedBox(height: 8),
-          const SectionTitle(title: 'Nearby Farms'),
-          const NearbyFarmsList(),
+          SectionTitle(title: 'Nearby Farms'),
+          NearbyFarmsList(), // horizontal scroll with shimmer
           SizedBox(height: 8),
-          const SectionTitle(title: 'Popular Products'),
-          const ProductsList(),
+          SectionTitle(title: 'Popular Products'),
+          ProductsList(),
           SizedBox(height: 36),
         ],
       ),
@@ -145,8 +147,7 @@ class _HomePageState extends State<HomePage> {
         if (placemarks.isNotEmpty) {
           final placemark = placemarks.first;
           Fluttertoast.showToast(
-            msg:
-                'Your Location: ${placemark.locality}, ${placemark.administrativeArea}',
+            msg: 'Your Location: ${placemark.locality}, ${placemark.administrativeArea}',
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.CENTER,
             backgroundColor: Colors.black87,
@@ -155,7 +156,6 @@ class _HomePageState extends State<HomePage> {
           );
         }
       } catch (e) {
-        // TODO
         debugPrint("$e");
       }
     } else {

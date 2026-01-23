@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localharvest_canada/config/routes/app_routes.dart';
 import 'package:localharvest_canada/core/app_state/app_location.dart';
 import 'package:localharvest_canada/core/app_state/app_user.dart';
@@ -8,6 +9,7 @@ import 'package:localharvest_canada/features/auth/domain/entities/user.dart';
 import 'package:localharvest_canada/features/location/data/services/location_service.dart';
 import 'package:localharvest_canada/features/location/domain/repositories/location_repository_impl.dart';
 import 'package:localharvest_canada/features/location/domain/usecases/get_current_location.dart';
+import 'package:localharvest_canada/features/nearby_farms/presentation/cubit/nearby_farms_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {

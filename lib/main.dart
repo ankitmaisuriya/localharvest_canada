@@ -9,6 +9,10 @@ import 'package:localharvest_canada/features/categories/data/datasources/categor
 import 'package:localharvest_canada/features/categories/domain/repositories/category_repository_impl.dart';
 import 'package:localharvest_canada/features/categories/domain/usecases/get_categories.dart';
 import 'package:localharvest_canada/features/categories/presentation/cubit/category_cubit.dart';
+import 'package:localharvest_canada/features/nearby_farms/data/datasources/nearby_farms_remote_datasource_impl.dart';
+import 'package:localharvest_canada/features/nearby_farms/domain/repositories/nearby_farms_repository_impl.dart';
+import 'package:localharvest_canada/features/nearby_farms/domain/usecases/get_nearby_farms.dart';
+import 'package:localharvest_canada/features/nearby_farms/presentation/cubit/nearby_farms_cubit.dart';
 
 import 'features/auth/domain/usecases/login_user.dart';
 import 'features/auth/domain/usecases/register_user.dart';
@@ -34,6 +38,13 @@ class LocalHarvestApp extends StatelessWidget {
     final categoryRepo = CategoryRepositoryImpl(categoryRemoteDatasourceImpl);
     final getCategoriesUseCase = GetCategories(categoryRepo);
 
+    //For Near by Farms
+    var nearbyFarmsRemoteDatasourceImpl = NearbyFarmsRemoteDatasourceImpl(dio);
+    var nearbyFarmsRepo = NearbyFarmsRepositoryImpl(
+      nearbyFarmsRemoteDatasourceImpl,
+    );
+    var getNearbyFarms = GetNearbyFarms(nearbyFarmsRepo);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthCubit>(
@@ -44,6 +55,10 @@ class LocalHarvestApp extends StatelessWidget {
           create: (_) =>
               CategoryCubit(getCategories: getCategoriesUseCase)
                 ..fetchCategories(),
+        ),
+        BlocProvider<NearbyFarmsCubit>(
+          create: (_) =>
+              NearbyFarmsCubit(getNearbyFarms: getNearbyFarms),
         ),
       ],
       child: MaterialApp(

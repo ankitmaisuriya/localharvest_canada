@@ -1,5 +1,12 @@
+// nearby_farms_page.dart (full vertical page)
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localharvest_canada/features/nearby_farms/presentation/widgets/farm_item_card.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:localharvest_canada/core/app_state/app_location.dart';
+import 'package:localharvest_canada/features/nearby_farms/presentation/cubit/nearby_farms_cubit.dart';
+import 'package:localharvest_canada/features/nearby_farms/presentation/cubit/nearby_farms_state.dart';
+
 
 class NearbyFarmsPage extends StatefulWidget {
   const NearbyFarmsPage({super.key});
@@ -9,95 +16,84 @@ class NearbyFarmsPage extends StatefulWidget {
 }
 
 class _NearbyFarmsPageState extends State<NearbyFarmsPage> {
-  String selectedCategory = 'All';
-  final List<String> categories = ['All', 'Vegetables', 'Fruits', 'Dairy'];
+  @override
+  void initState() {
+    super.initState();
+    _fetchNearbyFarms();
+  }
 
-  // Mocked farm data
-  final List<Map<String, dynamic>> farms = [
-    {
-      'name': 'Shri Ram Farm',
-      'category': 'Vegetables',
-      'distance': 1.2,
-      'products': ['Tomato', 'Potato']
-    },
-    {
-      'name': 'Khodiyar Farm',
-      'category': 'Fruits',
-      'distance': 1.8,
-      'products': ['Mango', 'Banana']
-    },
-    {
-      'name': 'Green Valley Farm',
-      'category': 'Vegetables',
-      'distance': 2.5,
-      'products': ['Spinach', 'Carrot']
-    },
-    {
-      'name': 'Fresh Roots Farm',
-      'category': 'Dairy',
-      'distance': 3.1,
-      'products': ['Milk', 'Cheese']
-    },
-  ];
+  void _fetchNearbyFarms() async {
+    while (AppLocation.currentPosition == null) {
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+
+    final pos = AppLocation.currentPosition!;
+    context.read<NearbyFarmsCubit>().fetchNearbyFarms(
+      latitude: pos.latitude,
+      longitude: pos.longitude,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Filter farms by category
-    List<Map<String, dynamic>> filteredFarms = selectedCategory == 'All'
-        ? farms
-        : farms.where((f) => f['category'] == selectedCategory).toList();
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nearby Farms & Products'),
-        backgroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Category filter chips
-            SizedBox(
-              height: 40,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
-                itemBuilder: (context, index) {
-                  final category = categories[index];
-                  final isSelected = category == selectedCategory;
-                  return ChoiceChip(
-                    label: Text(category),
-                    selected: isSelected,
-                    selectedColor: Colors.green.shade200,
-                    onSelected: (_) {
-                      setState(() {
-                        selectedCategory = category;
-                      });
-                    },
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
+      appBar: AppBar(title: const Text("Nearby Farms")),
+      body: BlocBuilder<NearbyFarmsCubit, NearbyFarmState>(
+        builder: (context, state) {
+          if (state is NearbyFarmLoading) return _buildShimmerList();
 
-            // Farms list
-            Expanded(
-              child: ListView.builder(
-                itemCount: filteredFarms.length,
-                itemBuilder: (context, index) {
-                  final farm = filteredFarms[index];
-                  return FarmItemCard(
-                    name: farm['name'],
-                    category: farm['category'],
-                    distance: farm['distance'],
-                    products: farm['products'],
-                  );
-                },
-              ),
+          if (state is NearbyFarmLoaded) {
+            if (state.nearbyFarms.isEmpty) {
+              return const Center(child: Text("No nearby farms found."));
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: state.nearbyFarms.length,
+              itemBuilder: (context, index) {
+                final farm = state.nearbyFarms[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: FarmItemCard(
+                    imageUrl: farm.imageUrl,
+                    name: farm.farmName,
+                    categories: farm.categories.join(', '),
+                    rating: farm.rating,
+                    distance: farm.distance,
+                  ),
+                );
+              },
+            );
+          }
+
+          if (state is NearbyFarmError) {
+            return Center(
+              child: Text(state.message, style: const TextStyle(color: Colors.red)),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
+  Widget _buildShimmerList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: 5,
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Container(
+            height: 100,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(8),
             ),
-          ],
+          ),
         ),
       ),
     );
